@@ -1,27 +1,24 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
+import { AuthRequest } from '../middleware/authMiddleware';
 
 const prisma = new PrismaClient();
 
-export const getFileContent = async (req: Request, res: Response) => {
-  const { userId, repo, filePath } = req.query;
-
-  if (!userId || !repo || !filePath) {
-    return res.status(400).json({ error: 'Missing userId, repo, or filePath in query' });
+export const getFileContent = async (req: AuthRequest, res: Response) => {
+  const { repo, filePath } = req.query;
+  if (!repo || !filePath) {
+    return res.status(400).json({ error: 'Missing repo or filePath in query' });
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId as string } });
-
+    const user = await prisma.user.findUnique({ where: { id: req.userId } });
     if (!user || !user.accessToken) {
       return res.status(404).json({ error: 'User not found or not authenticated' });
     }
 
-    const githubUsername = user.username;
-
     const contentResponse = await axios.get(
-      `https://api.github.com/repos/${githubUsername}/${repo}/contents/${filePath}`,
+      `https://api.github.com/repos/${user.username}/${repo}/contents/${filePath}`,
       {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
@@ -31,8 +28,6 @@ export const getFileContent = async (req: Request, res: Response) => {
     );
 
     const fileData = contentResponse.data;
-
-    // Decode base64 content
     const fileContent = Buffer.from(fileData.content, 'base64').toString('utf8');
 
     res.json({ filePath, fileContent });

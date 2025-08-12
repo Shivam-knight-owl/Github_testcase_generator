@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import { AuthRequest } from '../middleware/authMiddleware';
 
 const prisma = new PrismaClient();
 
@@ -11,14 +13,14 @@ export const handleGithubLogin = (req: Request, res: Response) => {
 };
 
 //callback function to handle the GitHub OAuth flow
+// Inside handleGithubCallback
+
 export const handleGithubCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
-
-  if (!code) {
-    return res.status(400).send('No authorization code provided');
-  }
+  if (!code) return res.status(400).send('No authorization code provided');
 
   try {
+    // Exchange code for GitHub token
     const tokenResponse = await axios.post(
       'https://github.com/login/oauth/access_token',
       {
@@ -26,69 +28,65 @@ export const handleGithubCallback = async (req: Request, res: Response) => {
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code,
       },
-      {
-        headers: { Accept: 'application/json' },
-      }
+      { headers: { Accept: 'application/json' } }
     );
 
     const accessToken = tokenResponse.data.access_token;
+    if (!accessToken) return res.status(400).send('Failed to get access token');
 
-    if (!accessToken) {
-      return res.status(400).send('Failed to get access token');
-    }
-
-    // Get GitHub user info to avoid duplicates
+    // Get GitHub user info
     const userResponse = await axios.get('https://api.github.com/user', {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-
     const githubUser = userResponse.data;
 
-    // Use upsert instead of create to avoid duplicates
-        const savedUser = await prisma.user.upsert({
+    // Upsert in DB
+    const savedUser = await prisma.user.upsert({
       where: { githubId: githubUser.id.toString() },
-      update: { 
-        accessToken: accessToken,
-        username: githubUser.login,
-        email: githubUser.email,
-      },
+      update: { accessToken, username: githubUser.login, email: githubUser.email },
       create: {
         githubId: githubUser.id.toString(),
-        accessToken: accessToken,
+        accessToken,
         username: githubUser.login,
         email: githubUser.email,
       },
     });
 
-    res.json({
-      message: 'Success',
-      userId: savedUser.id,
-      username: savedUser.username,
-      email: savedUser.email,
+    // Create JWT
+    const jwtToken = jwt.sign({ userId: savedUser.id }, process.env.JWT_SECRET!, { expiresIn: '7d' });
+
+    // Set as HTTP-only cookie
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
+
+    res.json({ message: "Login successful" });
   } catch (error) {
     console.error('OAuth error:', error);
     res.status(500).send('OAuth Failed');
   }
 };
 
+
 // Function to get user repositories
-export const getUserRepos = async (req: Request, res: Response) => {
-  const userId = req.query.userId as string;
+
+export const getUserRepos = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId; // From JWT
 
   if (!userId) {
-    return res.status(400).json({ error: 'Missing userId in query' });
+    return res.status(400).json({ error: 'User ID missing from token' });
   }
 
   try {
-    // 1. Get user from DB
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user || !user.accessToken) {
       return res.status(404).json({ error: 'User not found or not authenticated with GitHub' });
     }
 
-    // 2. Fetch repos from GitHub
     const response = await axios.get('https://api.github.com/user/repos', {
       headers: {
         Authorization: `Bearer ${user.accessToken}`,
@@ -112,50 +110,59 @@ export const getUserRepos = async (req: Request, res: Response) => {
 
 //get all code files in the repository
 // Get all code files in a repo
-export const getRepoFiles = async (req: Request, res: Response) => {
-  const { userId, repo } = req.query as { userId: string; repo: string };
+
+export const getRepoFiles = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId; // From JWT
+  const repo = req.query.repo as string;
 
   if (!userId || !repo) {
-    return res.status(400).json({ error: 'Missing userId or repo name' });
+    return res.status(400).json({ error: 'Missing repo name or user ID from token' });
   }
 
   try {
-    // Fetch user from DB
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user || !user.accessToken || !user.username) {
       return res.status(404).json({ error: 'User not found or not authenticated' });
     }
 
-    // 1. Get default branch
-    const repoInfo = await axios.get(`https://api.github.com/repos/${user.username}/${repo}`, {
-      headers: { Authorization: `Bearer ${user.accessToken}` },
-    });
+    // 1. Get repo info to find default branch
+    const repoInfo = await axios.get(
+      `https://api.github.com/repos/${user.username}/${repo}`,
+      { headers: { Authorization: `Bearer ${user.accessToken}` } }
+    );
     const defaultBranch = repoInfo.data.default_branch;
 
-    // 2. Get full tree of the repo
+    // 2. Get branch info to find commit SHA
+    const branchResp = await axios.get(
+      `https://api.github.com/repos/${user.username}/${repo}/branches/${defaultBranch}`,
+      { headers: { Authorization: `Bearer ${user.accessToken}` } }
+    );
+    const treeSha = branchResp.data.commit.commit.tree.sha;
+
+    // 3. Get the tree using the SHA
     const treeResp = await axios.get(
-      `https://api.github.com/repos/${user.username}/${repo}/git/trees/${defaultBranch}?recursive=1`,
-      {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      }
+      `https://api.github.com/repos/${user.username}/${repo}/git/trees/${treeSha}?recursive=1`,
+      { headers: { Authorization: `Bearer ${user.accessToken}` } }
     );
 
+        const codeExtensions = [
+      '.js', '.jsx', '.ts', '.tsx', '.py', '.java', '.c', '.cpp', '.cs', '.go', '.rb', '.php',
+      '.swift', '.kt', '.kts', '.rs', '.scala', '.dart', '.m', '.mm', '.sh', '.pl', '.r', '.jl',
+      '.lua', '.hs', '.fs', '.fsx', '.clj', '.cljs', '.groovy', '.vb', '.vbs', '.ps1', '.sql',
+      '.html', '.css', '.json', '.xml', '.yml', '.yaml'
+    ];
+
     const files = treeResp.data.tree
-      .filter((item: any) => item.type === 'blob') // only files
+      .filter((item: any) => item.type === 'blob')
       .map((item: any) => item.path)
       .filter((path: string) =>
-        path.endsWith('.js') ||
-        path.endsWith('.ts') ||
-        path.endsWith('.jsx') ||
-        path.endsWith('.tsx') ||
-        path.endsWith('.py') ||
-        path.endsWith('.java')
+        codeExtensions.some(ext => path.toLowerCase().endsWith(ext))
       );
 
     res.json({ files });
-  } catch (error) {
-    console.error('Error fetching files:', error);
+  } catch (error: any) {
+    console.error('Error fetching files:', error?.response?.data || error.message);
     res.status(500).json({ error: 'Failed to fetch files' });
   }
 };

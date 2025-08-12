@@ -5,18 +5,21 @@ import { getRepoFiles, getUserRepos, handleGithubCallback, handleGithubLogin } f
 import { getFileContent } from './controllers/getFileContent';
 import { generateTestSummariesRoute } from './controllers/generateAIsummary';
 import { generateTestCode } from './controllers/generateTestCode';
+import { authMiddleware } from './middleware/authMiddleware';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/github/login', handleGithubLogin);
 app.get('/github/callback', handleGithubCallback);
-app.get('/github/repos', getUserRepos);
-app.get('/repos/files', getRepoFiles);
-app.get('/repos/file-content', getFileContent);
-app.post('/generate-test-summaries', generateTestSummariesRoute);
-app.post("/generate-test-code", generateTestCode);
+app.get('/github/repos',authMiddleware, getUserRepos);
+app.get('/repos/files',authMiddleware, getRepoFiles);
+app.get('/repos/file-content',authMiddleware, getFileContent);
+app.post('/generate-test-summaries',authMiddleware, generateTestSummariesRoute);
+app.post("/generate-test-code",authMiddleware, generateTestCode);
 
 const PORT=process.env.PORT;
 app.listen(PORT, () => {

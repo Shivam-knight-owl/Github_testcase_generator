@@ -12,7 +12,7 @@ export async function generateTestSummariesRoute(req: Request, res: Response) {
     const summaries = await generateTestSummaries(files);
     res.json({ summaries });
   } catch (error) {
-    console.error("Gemini summary error:", error);
+    console.error("AI summary error:", error);
     res.status(500).json({ error: "AI failed to summarize." });
   }
 }

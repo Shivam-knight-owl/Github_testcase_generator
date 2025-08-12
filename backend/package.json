@@ -16,11 +16,15 @@
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.13.0",
     "axios": "^1.11.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.2.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.13.0",
