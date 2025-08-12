@@ -63,7 +63,9 @@ export const handleGithubCallback = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
-    res.json({ message: "Login successful" });
+    // res.json({ message: "Login successful" });
+    // Redirect to frontend home page
+    res.redirect(`${process.env.FRONTEND_URL}/?loggedIn=true`);
   } catch (error) {
     console.error('OAuth error:', error);
     res.status(500).send('OAuth Failed');
