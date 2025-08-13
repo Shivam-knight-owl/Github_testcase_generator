@@ -17,7 +17,10 @@ export const handleGithubLogin = (req: Request, res: Response) => {
 
 export const handleGithubCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
-  if (!code) return res.status(400).send('No authorization code provided');
+  if (!code) {
+    // If no code, user canceled or failed OAuth - redirect to landing page
+    return res.redirect(safeFrontendUrl("/"));
+  }
 
   try {
     // Exchange code for GitHub token
@@ -32,7 +35,10 @@ export const handleGithubCallback = async (req: Request, res: Response) => {
     );
 
     const accessToken = tokenResponse.data.access_token;
-    if (!accessToken) return res.status(400).send('Failed to get access token');
+    if (!accessToken) {
+      // If no access token, redirect to landing page
+      return res.redirect(safeFrontendUrl("/"));
+    }
 
     // Get GitHub user info
     const userResponse = await axios.get('https://api.github.com/user', {
@@ -63,12 +69,12 @@ export const handleGithubCallback = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
-    // res.json({ message: "Login successful" });
-    // Redirect to frontend home page
-    res.redirect(`${process.env.FRONTEND_URL}/?loggedIn=true`);
+    // Redirect to frontend home page only on successful login
+    res.redirect(safeFrontendUrl("/home"));
   } catch (error) {
     console.error('OAuth error:', error);
-    res.status(500).send('OAuth Failed');
+    // On error, redirect to landing page
+    res.redirect(safeFrontendUrl("/"));
   }
 };
 
@@ -168,3 +174,18 @@ export const getRepoFiles = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch files' });
   }
 };
+
+// --- Add this helper at the bottom of the file ---
+
+/**
+ * Ensures no double slashes in frontend URL redirection.
+ * Usage: safeFrontendUrl("/home") or safeFrontendUrl("/")
+ */
+function safeFrontendUrl(path: string) {
+  let base = process.env.FRONTEND_URL || "";
+  // Remove trailing slash from base if present
+  if (base.endsWith("/")) base = base.slice(0, -1);
+  // Ensure path starts with a single slash
+  if (!path.startsWith("/")) path = "/" + path;
+  return base + path;
+}
