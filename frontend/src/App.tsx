@@ -9,8 +9,16 @@ import { useAuth } from "./contexts/AuthContext";
 
 function Protected({ children }: { children: React.ReactElement }) {
   const { user, loading } = useAuth();
-  if (loading) return <div>Loading...</div>;
-  if (!user) return <Navigate to="/" replace />;
+  
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+  
+  // Strict validation: user must exist and have required fields
+  if (!user || !user.id || !user.username) {
+    return <Navigate to="/" replace />;
+  }
+  
   return children;
 }
 
