@@ -40,8 +40,8 @@ export default function LandingPage() {
         </div>
 
         {/* Hero Section */}
-        <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto text-center">
+        <section className="relative min-h-screen flex items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8">
+          <div className="w-full max-w-6xl mx-auto text-center">
             <h1 className="font-['Playfair_Display'] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
               Start your journey
               <br />
@@ -93,7 +93,7 @@ export default function LandingPage() {
         </section>
 
         {/* Explore Features Section */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8">
+        <section className="relative py-12 sm:py-24 px-2 sm:px-4 md:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -105,7 +105,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
               {/* Row 1 - Top 3 cards */}
               {/* GitHub OAuth Integration */}
               <div className="group p-8 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 hover:shadow-xl transition-all duration-300 hover:scale-105">
@@ -196,7 +196,7 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works Section */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-white/30 backdrop-blur-sm">
+        <section className="relative py-12 sm:py-24 px-2 sm:px-4 md:px-6 lg:px-8 bg-white/30 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -208,7 +208,7 @@ export default function LandingPage() {
             </div>
 
             {/* Desktop: Horizontal flow */}
-            <div className="hidden lg:flex items-center justify-between relative">
+            <div className="hidden lg:flex items-center justify-between relative flex-wrap">
               {/* Step 1 */}
               <div className="relative z-10 text-center group max-w-xs">
                 <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
@@ -266,7 +266,7 @@ export default function LandingPage() {
             </div>
 
             {/* Mobile & Tablet: Vertical flow */}
-            <div className="lg:hidden space-y-12">
+            <div className="lg:hidden space-y-8 sm:space-y-12">
               {/* Step 1 */}
               <div className="text-center group">
                 <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
@@ -329,7 +329,7 @@ export default function LandingPage() {
         </section>
 
         {/* Call to Action Section */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 overflow-hidden">
+        <section className="relative py-12 sm:py-24 px-2 sm:px-4 md:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 overflow-hidden">
           {/* Background Decorative Elements */}
           <div className="absolute top-0 left-0 w-full h-full">
             <div className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full filter blur-3xl opacity-30"></div>

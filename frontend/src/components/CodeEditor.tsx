@@ -27,28 +27,28 @@ export default function CodeEditor({ code }: { code: string }) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       {/* Theme Toggle Button */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-10">
         <button
           onClick={toggleTheme}
           type="button"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/30 backdrop-blur-lg border border-white/40 shadow-lg hover:bg-white/40 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white/30 backdrop-blur-lg border border-white/40 shadow-lg hover:bg-white/40 transition-all duration-300 transform hover:scale-105 cursor-pointer"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {editorTheme === "dark" ? (
               <>
-                <svg className="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
-                <span className="font-['Inter'] text-sm font-medium text-gray-900">Dark</span>
+                <span className="font-['Inter'] text-xs sm:text-sm font-medium text-gray-900 hidden sm:inline">Dark</span>
               </>
             ) : (
               <>
-                <svg className="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-                <span className="font-['Inter'] text-sm font-medium text-gray-900">Light</span>
+                <span className="font-['Inter'] text-xs sm:text-sm font-medium text-gray-900 hidden sm:inline">Light</span>
               </>
             )}
           </div>
@@ -60,20 +60,20 @@ export default function CodeEditor({ code }: { code: string }) {
         {`
           .toastui-editor-contents pre,
           .toastui-editor-contents code {
-            font-size: 16px !important;
+            font-size: 14px !important;
             line-height: 1.6 !important;
             font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace !important;
           }
           
           .toastui-editor-contents pre {
-            padding: 20px !important;
-            border-radius: 12px !important;
-            margin: 16px 0 !important;
+            padding: 12px !important;
+            border-radius: 8px !important;
+            margin: 12px 0 !important;
           }
           
           .toastui-editor .ProseMirror {
-            padding: 24px !important;
-            font-size: 16px !important;
+            padding: 16px !important;
+            font-size: 14px !important;
           }
           
           .toastui-editor-toolbar {
@@ -82,6 +82,24 @@ export default function CodeEditor({ code }: { code: string }) {
           
           .toastui-editor-mode-switch {
             display: none !important;
+          }
+          
+          @media (min-width: 640px) {
+            .toastui-editor-contents pre,
+            .toastui-editor-contents code {
+              font-size: 16px !important;
+            }
+            
+            .toastui-editor-contents pre {
+              padding: 20px !important;
+              border-radius: 12px !important;
+              margin: 16px 0 !important;
+            }
+            
+            .toastui-editor .ProseMirror {
+              padding: 24px !important;
+              font-size: 16px !important;
+            }
           }
           
           /* Hide all error indicators and squiggles */
@@ -139,7 +157,7 @@ export default function CodeEditor({ code }: { code: string }) {
         key={editorTheme + "-" + themeVersion}
         initialValue={codeBlock}
         previewStyle="tab"
-        height="600px"
+        height="400px"
         initialEditType="markdown"
         useCommandShortcut={true}
         toolbarItems={[]}

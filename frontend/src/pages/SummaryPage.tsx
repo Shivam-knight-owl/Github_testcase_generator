@@ -6,10 +6,11 @@ import { useAuth } from "../contexts/AuthContext";
 import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import ThemeToggle from "../components/ThemeToggle";
-import SelectedFilesList from "../components/SelectedFilesList";
+// import SelectedFilesList from "../components/SelectedFilesList";
 import SummaryBox from "../components/SummaryBox";
-import ErrorMessage from "../components/ErrorMessage";
+// import ErrorMessage from "../components/ErrorMessage";
 import LoadingIndicator from "../components/LoadingIndicator";
+import Header from "../components/Header";
 
 // Define the Summary type if not imported from elsewhere
 type Summary = {
@@ -238,54 +239,36 @@ export default function SummaryPage() {
           <div className="absolute top-1/3 left-1/3 w-[350px] h-[350px] bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 rounded-full filter blur-3xl opacity-15 animate-pulse"></div>
         </div>
 
-        {/* Header */}
-        <header className="relative z-50 bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl mx-6 mt-6 sticky top-6 shadow-2xl max-w-6xl mx-auto">
-          <div className="px-8 py-2.5">
-            <div className="flex items-center justify-between">
-              {/* Navigation */}
-              <div className="flex items-center gap-4">
-                <button onClick={() => navigate(-1)} className="font-['Inter'] text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">
-                  ← Back to Files
-                </button>
-                <div className="w-px h-6 bg-white/30"></div>
-                <span className="font-['Playfair_Display'] text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  Test Summaries
-                </span>
-              </div>
-
-              {/* Right Side - Theme Toggle + User Profile */}
-              <div className="flex items-center gap-4">
-                <ThemeToggle theme={editorTheme} toggleTheme={toggleTheme} />
-                {user && (
-                  <div className="flex items-center gap-3 px-4 py-1.5 rounded-2xl bg-white/30 backdrop-blur-lg border border-white/40 shadow-lg">
-                    <img src={`https://github.com/${user.username}.png`} alt={user.username} className="w-8 h-8 rounded-full border-2 border-white/50 shadow-md" />
-                    <div className="flex flex-col items-start">
-                      <span className="font-['Inter'] font-bold text-gray-900 text-sm">{user.username}</span>
-                      <span className="font-['Inter'] text-xs text-gray-600 font-medium">GitHub User</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* Header with Back Button */}
+        <div className="relative">
+          <Header 
+            title="Test Summaries" 
+            showBackButton={true}
+            backButtonText="Files"
+          />
+          
+          {/* Theme Toggle - positioned in top right */}
+          <div className="absolute top-4 sm:top-6 right-2 sm:right-4 md:right-6 z-60">
+            <ThemeToggle theme={editorTheme} toggleTheme={toggleTheme} />
           </div>
-        </header>
+        </div>
 
-        {/* Main Content */}
-        <main className="relative z-10 max-w-[95vw] mx-auto px-6 py-8">
+        {/* Main Content - No separate back button needed */}
+        <main className="relative z-10 w-full max-w-full md:max-w-[95vw] mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-8 mt-16">
           {/* Page Title */}
-          <div className="mb-12 text-center">
-            <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          <div className="mb-8 sm:mb-12 text-center">
+            <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
               Test Case <span className="italic bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Summaries</span>
             </h1>
-            <p className="font-['Inter'] text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            <p className="font-['Inter'] text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               AI-generated comprehensive test cases summaries for your selected files.
             </p>
           </div>
 
           {/* Show selected files before generating */}
           {!hasGenerated && (
-            <div className="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl mb-8 max-w-4xl mx-auto">
-              <div className="p-8">
+            <div className="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl mb-8 w-full max-w-full sm:max-w-4xl mx-auto">
+              <div className="p-4 sm:p-8">
                 <div className="mb-6">
                   <h2 className="font-['Playfair_Display'] text-2xl font-bold text-gray-900 mb-4">
                     Selected Files for <span className="italic bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Testing</span>
@@ -343,8 +326,8 @@ export default function SummaryPage() {
           {hasGenerated && summaries.length > 0 && (
             <div className="space-y-8">
               {summaries.map((summary: Summary, index: number) => (
-                <div key={index} className="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl overflow-hidden">
-                  <div className="p-8">
+                <div key={index} className="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl overflow-hidden w-full max-w-full">
+                  <div className="p-4 sm:p-8">
                     <div className="flex justify-between items-start mb-6">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
@@ -363,16 +346,21 @@ export default function SummaryPage() {
                           </div>
                         </div>
                       </div>
-                      <button
+                        <button
                         onClick={() => handleGenerateTestCode(summary)}
                         disabled={loadingTestCode === summary.filePath}
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-['Inter'] font-semibold px-6 py-3 rounded-full hover:from-emerald-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none cursor-pointer"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-['Inter'] font-semibold 
+                          px-4 py-2 text-sm
+                          sm:px-6 sm:py-3 sm:text-base
+                          rounded-full hover:from-emerald-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg 
+                          disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none cursor-pointer"
+                        >
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                         </svg>
-                        {loadingTestCode === summary.filePath ? "Generating..." : "Generate Test Code"}
-                      </button>
+                        <span className="hidden md:inline">{loadingTestCode === summary.filePath ? "Generating..." : "Generate Test Code"}</span>
+                        <span className="inline md:hidden">{loadingTestCode === summary.filePath ? "..." : "Generate Code"}</span>
+                        </button>
                     </div>
                     
                     <div className="bg-white/40 backdrop-blur-sm rounded-2xl border border-white/30 overflow-hidden">
@@ -397,8 +385,8 @@ export default function SummaryPage() {
           )}
 
           {hasGenerated && summaries.length === 0 && !loading && (
-            <div className="text-center py-16">
-              <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-12 border border-white/20 shadow-xl max-w-2xl mx-auto">
+            <div className="text-center py-8 sm:py-16">
+              <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 sm:p-12 border border-white/20 shadow-xl max-w-2xl mx-auto">
                 <div className="text-gray-400 mb-6">
                   <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

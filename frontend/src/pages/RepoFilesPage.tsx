@@ -4,6 +4,7 @@ import api from "../api";
 import { useAppState } from "../contexts/AppStateContext";
 import { useAuth } from "../contexts/AuthContext";
 import LoadingIndicator from "../components/LoadingIndicator";
+import Header from "../components/Header";
 
 export default function RepoFilesPage() {
   const { repo } = useParams<{ repo: string }>();
@@ -381,102 +382,81 @@ export default function RepoFilesPage() {
           <div className="absolute top-1/3 left-1/3 w-[350px] h-[350px] bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 rounded-full filter blur-3xl opacity-15 animate-pulse"></div>
         </div>
 
-        {/* Header */}
-        <header className="relative z-50 bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl mx-6 mt-6 sticky top-6 shadow-2xl max-w-6xl mx-auto">
-          <div className="px-8 py-2.5">
-            <div className="flex items-center justify-between">
-              {/* Navigation */}
-              <div className="flex items-center gap-4">
-                <Link to="/home" className="font-['Inter'] text-sm text-gray-600 hover:text-purple-600 transition-colors">
-                  ← Back to Repositories
-                </Link>
-                <div className="w-px h-6 bg-white/30"></div>
-                <span className="font-['Playfair_Display'] text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  {repo}
-                </span>
-              </div>
+        {/* Header with Back Button */}
+        <Header 
+          title={repo || "Repository"} 
+          showBackButton={true}
+          backButtonPath="/home"
+          backButtonText="Repositories"
+        />
 
-              {/* User Profile */}
-              {user && (
-                <div className="flex items-center gap-3 px-4 py-1.5 rounded-2xl bg-white/30 backdrop-blur-lg border border-white/40 shadow-lg">
-                  <img src={`https://github.com/${user.username}.png`} alt={user.username} className="w-8 h-8 rounded-full border-2 border-white/50 shadow-md" />
-                  <div className="flex flex-col items-start">
-                    <span className="font-['Inter'] font-bold text-gray-900 text-sm">{user.username}</span>
-                    <span className="font-['Inter'] text-xs text-gray-600 font-medium">GitHub User</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="relative z-10 max-w-[95vw] mx-auto px-6 py-8">
+        {/* Main Content - No separate back button needed */}
+        <main className="relative z-10 w-full max-w-full md:max-w-[95vw] mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-8 mt-16">
           {/* Light Theme Section - Files List */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl mb-8">
-            <div className="p-8">
-              <div className="mb-8">
-                <h1 className="font-['Playfair_Display'] text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-white/20 shadow-xl mb-6 sm:mb-8 w-full overflow-hidden">
+            <div className="p-4 sm:p-6 md:p-8">
+              <div className="mb-6 sm:mb-8">
+                <h1 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-4 leading-tight">
                   Select Files for <span className="italic bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Testing</span>
                 </h1>
-                <p className="font-['Inter'] text-lg text-gray-600">
+                <p className="font-['Inter'] text-sm sm:text-base md:text-lg text-gray-600">
                   Choose the files you want to generate comprehensive test cases for using AI.
                 </p>
               </div>
 
               {/* File Count Summary with View Toggle */}
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/20">
-                <div className="flex items-center gap-4">
-                  <div className="bg-white/40 backdrop-blur-sm rounded-2xl px-4 py-2 border border-white/30">
-                    <span className="font-['Inter'] text-sm font-semibold text-gray-700">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-white/20 gap-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                  <div className="bg-white/40 backdrop-blur-sm rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 border border-white/30">
+                    <span className="font-['Inter'] text-xs sm:text-sm font-semibold text-gray-700">
                       {files.length} files available
                     </span>
                   </div>
-                  <div className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl px-4 py-2">
-                    <span className="font-['Inter'] text-sm font-semibold text-white">
+                  <div className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2">
+                    <span className="font-['Inter'] text-xs sm:text-sm font-semibold text-white">
                       {selectedFiles.filter(f => f.repo === repo).length} selected
                     </span>
                   </div>
                 </div>
                 
                 {/* View Mode Toggle */}
-                <div className="flex items-center gap-2 bg-white/30 backdrop-blur-sm rounded-xl p-1 border border-white/30">
+                <div className="flex items-center gap-1 sm:gap-2 bg-white/30 backdrop-blur-sm rounded-lg sm:rounded-xl p-1 border border-white/30 w-full sm:w-auto">
                   <button
                     onClick={() => setViewMode("tree")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
+                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg transition-all duration-200 cursor-pointer flex-1 sm:flex-none justify-center ${
                       viewMode === "tree" 
                         ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-sm' 
                         : 'text-gray-600 hover:text-gray-800'
                     }`}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2V7zm0 0a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
                     </svg>
-                    <span className="font-['Inter'] text-sm font-medium">Tree</span>
+                    <span className="font-['Inter'] text-xs sm:text-sm font-medium">Tree</span>
                   </button>
                   <button
                     onClick={() => setViewMode("list")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
+                    className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg transition-all duration-200 cursor-pointer flex-1 sm:flex-none justify-center ${
                       viewMode === "list" 
                         ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-sm' 
                         : 'text-gray-600 hover:text-gray-800'
                     }`}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
-                    <span className="font-['Inter'] text-sm font-medium">List</span>
+                    <span className="font-['Inter'] text-xs sm:text-sm font-medium">List</span>
                   </button>
                 </div>
               </div>
 
               {/* Files Display */}
               {viewMode === "tree" ? (
-                <div className="space-y-2 max-h-[600px] overflow-y-auto">
+                <div className="space-y-2 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
                   {renderTreeNode(buildFolderStructure(files))}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 gap-4">
+                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 gap-3 sm:gap-4">
                   {files.map((file, index) => (
                     <div
                       key={file}
@@ -526,18 +506,18 @@ export default function RepoFilesPage() {
           </div>
 
           {/* Dark Theme Section - Generate Button */}
-          <div className="relative bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 rounded-3xl overflow-hidden shadow-2xl">
+          <div className="relative bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl w-full mt-8">
             {/* Background Decorative Elements */}
             <div className="absolute top-0 left-0 w-full h-full">
               <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full filter blur-2xl opacity-30"></div>
               <div className="absolute bottom-10 left-10 w-24 h-24 bg-gradient-to-tr from-blue-500 to-cyan-500 rounded-full filter blur-2xl opacity-25"></div>
             </div>
             
-            <div className="relative z-10 p-8 text-center">
-              <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-white mb-4">
+            <div className="relative z-10 p-4 sm:p-6 md:p-8 text-center">
+              <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4 leading-tight">
                 Ready to Generate <span className="italic bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">AI Tests</span>?
               </h2>
-              <p className="font-['Inter'] text-gray-300 mb-8 max-w-2xl mx-auto">
+              <p className="font-['Inter'] text-sm sm:text-base text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
                 {selectedFiles.filter(f => f.repo === repo).length > 0
                   ? `Generate comprehensive test suites for ${selectedFiles.filter(f => f.repo === repo).length} selected files using advanced AI models.`
                   : "Select files above to start generating intelligent test cases."
@@ -547,18 +527,18 @@ export default function RepoFilesPage() {
               <button
                 onClick={onGenerate}
                 disabled={selectedFiles.filter(f => f.repo === repo).length === 0}
-                className={`inline-flex items-center gap-3 font-['Inter'] font-semibold text-lg px-8 py-4 rounded-full transition-all duration-300 transform cursor-pointer ${
+                className={`inline-flex items-center gap-2 sm:gap-3 font-['Inter'] font-semibold text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 rounded-full transition-all duration-300 transform cursor-pointer w-full sm:w-auto justify-center ${
                   selectedFiles.filter(f => f.repo === repo).length > 0
                     ? 'bg-white text-black hover:bg-gray-100 hover:scale-105 shadow-2xl hover:shadow-white/20'
                     : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
                 }`}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Generate Summary for Test Cases
+                <span className="truncate">Generate Summary for Test Cases</span>
                 {selectedFiles.filter(f => f.repo === repo).length > 0 && (
-                  <span className="ml-2 bg-black/20 px-2 py-1 rounded-full text-sm">
+                  <span className="ml-2 bg-black/20 px-2 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm flex-shrink-0">
                     {selectedFiles.filter(f => f.repo === repo).length}
                   </span>
                 )}

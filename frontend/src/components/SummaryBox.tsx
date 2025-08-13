@@ -31,7 +31,7 @@ export default function SummaryBox({
           .toastui-editor-contents li,
           .toastui-editor-contents div,
           .toastui-editor .ProseMirror {
-            font-size: 16px !important;
+            font-size: 14px !important;
             line-height: 1.6 !important;
             font-family: 'Inter', sans-serif !important;
           }
@@ -40,9 +40,26 @@ export default function SummaryBox({
           .toastui-editor-contents h2,
           .toastui-editor-contents h3,
           .toastui-editor-contents h4 {
-            font-size: 18px !important;
+            font-size: 16px !important;
             font-weight: 600 !important;
-            margin: 16px 0 8px 0 !important;
+            margin: 12px 0 6px 0 !important;
+          }
+          
+          @media (min-width: 640px) {
+            .toastui-editor-contents p,
+            .toastui-editor-contents li,
+            .toastui-editor-contents div,
+            .toastui-editor .ProseMirror {
+              font-size: 16px !important;
+            }
+            
+            .toastui-editor-contents h1,
+            .toastui-editor-contents h2,
+            .toastui-editor-contents h3,
+            .toastui-editor-contents h4 {
+              font-size: 18px !important;
+              margin: 16px 0 8px 0 !important;
+            }
           }
         `}
       </style>
@@ -50,7 +67,7 @@ export default function SummaryBox({
         key={summary.filePath + "-summary-" + editorTheme + "-" + themeVersion}
         initialValue={cleanSummary}
         previewStyle="tab"
-        height="300px"
+        height="250px"
         initialEditType="markdown"
         useCommandShortcut={true}
         ref={summaryRef}
