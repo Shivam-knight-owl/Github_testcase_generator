@@ -154,12 +154,9 @@ The entry point showcasing the platform's value proposition with elegant glassmo
 - Secure GitHub OAuth integration button
 - Responsive design for all devices
 
-*🖼️ Screenshot Placeholder: Landing Page*
-```
-[Landing Page - Hero section with "Start your journey with Test Case Generator" heading, 
-GitHub sign-in button, and feature cards showing the complete testing automation pipeline]
-```
-
+![Landing Page](screenshots/landingpage1.png)
+![Landing Page](screenshots/landingpage2.png)
+![Landing Page](screenshots/landingpage3.png)
 ---
 
 ### 2. GitHub Authentication Flow
@@ -171,11 +168,7 @@ Secure OAuth 2.0 integration for seamless GitHub account connection.
 - JWT token generation and secure cookie storage
 - Automatic redirection to dashboard
 
-*🖼️ Screenshot Placeholder: GitHub OAuth*
-```
-[GitHub OAuth Consent Screen - Permission request for repository access 
-with clear explanation of required permissions]
-```
+![GitHub OAuth](screenshots/github_oauth.png)
 
 ---
 
@@ -189,11 +182,7 @@ Comprehensive dashboard displaying all user repositories with advanced filtering
 - Error handling for authentication issues
 - Direct links to repository exploration
 
-*🖼️ Screenshot Placeholder: Repository Dashboard*
-```
-[Home Page - Grid of repository cards showing repo names, descriptions, languages, 
-star counts, and privacy badges with glassmorphism design]
-```
+![Repository Dashboard](screenshots/listofrepos.png)
 
 ---
 
@@ -208,17 +197,9 @@ Advanced file browser with intelligent filtering and multi-selection capabilitie
 - **Folder Navigation:** Expandable/collapsible folder structure
 - **Selection Persistence:** Maintains selections across view mode changes
 
-*🖼️ Screenshot Placeholder: File Explorer - Tree View*
-```
-[Repository Files Page - Tree view showing expandable folders, file icons, 
-checkboxes for selection, and file count summary]
-```
-
-*🖼️ Screenshot Placeholder: File Explorer - List View*
-```
-[Repository Files Page - Grid view of files with language badges, 
-selection checkboxes, and view mode toggle buttons]
-```
+![File Explorer - Tree View](screenshots/filesinrepo.png)
+![File Explorer - List View](screenshots/file_list.png)
+![Multiple Files Selection - List View](screenshots/files_selection.png)
 
 ---
 
@@ -233,17 +214,7 @@ Intelligent analysis of selected files with comprehensive test planning.
 - **Per-File Processing:** Individual summaries for each selected file
 - **Real-time Generation:** Progress indicators and loading states
 
-*🖼️ Screenshot Placeholder: Test Summaries - Generation*
-```
-[Summary Page - File list with "Generate Test Summaries" button, 
-selected files count, and loading indicator]
-```
-
-*🖼️ Screenshot Placeholder: Test Summaries - Results*
-```
-[Summary Page - Generated summaries in editable markdown editors, 
-theme toggle, and "Generate Test Code" buttons for each file]
-```
+![Test Summaries - Generation](screenshots/testcase_summaries.png)
 
 ---
 
@@ -258,11 +229,8 @@ Production-ready test code generation with professional editing capabilities.
 - **Responsive Design:** Optimal viewing on all device sizes
 - **Navigation:** Seamless flow between summaries and generated code
 
-*🖼️ Screenshot Placeholder: Test Code Editor*
-```
-[Editor Page - Generated test code in syntax-highlighted editor, 
-copy button, file name display, and navigation buttons]
-```
+![Test Code Editor - Result 1](screenshots/generated_testcode.png)
+![Test Code Editor - Result 2](screenshots/generated_testcode2.png)
 
 ---
 
@@ -272,7 +240,7 @@ copy button, file name display, and navigation buttons]
 ```typescript
 GET  /github/login          # Initiate GitHub OAuth flow
 GET  /github/callback       # Handle OAuth callback
-GET  /user/details          # Get authenticated user info
+GET  /auth/user          # Get authenticated user info
 ```
 
 ### Repository Management
@@ -346,58 +314,6 @@ POST /generate-test-code       # Generate executable test code
 - Generate comprehensive tests before PR submissions
 - Validate edge cases and error handling
 - Ensure proper test coverage for new features
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how to get started:
-
-### Development Setup
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Install dependencies for both frontend and backend
-4. Set up environment variables
-5. Run the development servers
-
-### Code Standards
-- **TypeScript:** Strict type checking required
-- **ESLint:** Follow the configured rules
-- **Prettier:** Code formatting consistency
-- **Conventional Commits:** Use standard commit message format
-- **Testing:** Write tests for new features
-
-### Pull Request Process
-1. Ensure all tests pass
-2. Update documentation if needed
-3. Add screenshots for UI changes
-4. Submit PR with clear description
-5. Respond to review feedback promptly
-
-## 🚦 Deployment
-
-### Frontend Deployment
-```bash
-cd frontend
-npm run build
-# Deploy the 'dist' folder to your hosting service
-```
-
-### Backend Deployment
-```bash
-cd backend
-npm run build
-# Configure environment variables for production
-# Deploy with your preferred hosting service
-```
-
-### Environment Considerations
-- **Database:** Set up production database with proper migrations
-- **HTTPS:** Ensure secure connections in production
-- **CORS:** Configure for your production domain
-- **Error Monitoring:** Implement logging and error tracking
-
-## 📄 License
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
