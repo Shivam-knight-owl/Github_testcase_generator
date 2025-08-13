@@ -6,13 +6,15 @@ interface HeaderProps {
   showBackButton?: boolean;
   backButtonPath?: string;
   backButtonText?: string;
+  alignTitleLeft?: boolean; // New prop to allow left alignment
 }
 
 export default function Header({ 
   title = "Test Case Generator",
   showBackButton = false,
   backButtonPath,
-  backButtonText = "Back"
+  backButtonText = "Back",
+  alignTitleLeft = false // Default to centered title
 }: HeaderProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -29,9 +31,9 @@ export default function Header({
     <header className="sticky z-50 bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl mx-auto sm:mx-auto mt-4 sm:mt-6 top-4 sm:top-6 shadow-2xl max-w-full md:max-w-5xl left-0 right-0">
       <div className="px-4 sm:px-6 md:px-8 py-2.5">
         <div className="flex items-center justify-between">
-          {/* Back Button - Left Side */}
-          <div className="flex-shrink-0 w-24 sm:w-32">
-            {showBackButton && (
+          {/* Left side - Back Button or Title when alignTitleLeft is true */}
+          <div className={`flex-shrink-0 ${showBackButton ? 'w-24 sm:w-32' : alignTitleLeft ? 'flex-grow' : 'w-24 sm:w-32'}`}>
+            {showBackButton ? (
               <button 
                 onClick={handleBackClick}
                 className="font-['Inter'] text-sm text-gray-600 hover:text-purple-600 transition-colors cursor-pointer bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/30 shadow-sm hover:bg-white/30 flex items-center gap-1"
@@ -41,17 +43,23 @@ export default function Header({
                 </svg>
                 <span>{backButtonText}</span>
               </button>
-            )}
+            ) : alignTitleLeft ? (
+              <Link to="/" className="font-['Playfair_Display'] text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                {title}
+              </Link>
+            ) : null}
           </div>
           
-          {/* Title - Center */}
-          <div className="flex-grow text-center">
-            <Link to="/" className="font-['Playfair_Display'] text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              {title}
-            </Link>
-          </div>
+          {/* Title - Center only when not left aligned */}
+          {!alignTitleLeft && (
+            <div className="flex-grow text-center">
+              <Link to="/" className="font-['Playfair_Display'] text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                {title}
+              </Link>
+            </div>
+          )}
 
-          {/* User Profile - Right Side */}
+          {/* User Profile - Always Right Side */}
           <div className="flex-shrink-0 w-24 sm:w-32 flex justify-end">
             {user && (
               <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl bg-white/30 backdrop-blur-lg border border-white/40 shadow-lg hover:shadow-xl hover:bg-white/40 transition-all duration-300 transform hover:scale-105">

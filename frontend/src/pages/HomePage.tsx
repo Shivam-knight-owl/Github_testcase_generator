@@ -140,8 +140,8 @@ export default function HomePage() {
           <div className="absolute bottom-1/3 right-1/4 w-[300px] h-[300px] bg-gradient-to-bl from-emerald-400 via-cyan-400 to-blue-500 rounded-full filter blur-3xl opacity-15 animate-pulse"></div>
         </div>
 
-        {/* Header */}
-        <Header />
+        {/* Header with left-aligned title */}
+        <Header alignTitleLeft={true} />
 
         {/* Main Content with proper spacing */}
         <main className="relative z-10 w-full max-w-full md:max-w-7xl mx-auto px-2 sm:px-4 md:px-8 py-4 sm:py-8 mt-16 sm:mt-20">
@@ -182,20 +182,20 @@ export default function HomePage() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 sm:gap-10">
               {repos.map((repo) => (
                 <Link
                   key={repo.name}
                   to={`/repo/${repo.name}`}
                   className="group block cursor-pointer"
                 >
-                  <div className="bg-white/60 backdrop-blur-sm border border-white/20 rounded-3xl p-6 h-full transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-white/80 hover:border-white/40">
+                  <div className="bg-white/60 backdrop-blur-sm border border-white/20 rounded-3xl p-8 h-full min-h-[280px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] hover:bg-white/80 hover:border-white/40">
                     {/* Repository Header */}
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-14 h-14 bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2V7zm0 0a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                    <div className="flex items-start justify-between mb-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2V7zm0 0a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
                           </svg>
                         </div>
                       </div>
@@ -210,14 +210,19 @@ export default function HomePage() {
                     </div>
 
                     {/* Repository Info */}
-                    <div className="mb-6">
-                      <h3 className="font-['Inter'] text-xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-300 leading-tight">
+                    <div className="mb-8">
+                      <h3 className="font-['Inter'] text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors duration-300 leading-tight line-clamp-2">
                         {repo.name}
                       </h3>
+                      {repo.description && (
+                        <p className="font-['Inter'] text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                          {repo.description}
+                        </p>
+                      )}
                     </div>
 
                     {/* Repository Stats */}
-                    <div className="flex items-center justify-between text-sm text-gray-500 font-['Inter']">
+                    <div className="flex items-center justify-between text-sm text-gray-500 font-['Inter'] mt-auto">
                       <div className="flex items-center gap-4">
                         {repo.language && (
                           <div className="flex items-center gap-2">
@@ -225,7 +230,7 @@ export default function HomePage() {
                             <span className="font-medium">{repo.language}</span>
                           </div>
                         )}
-                        {repo.stargazers_count !== undefined && (
+                        {repo.stargazers_count !== undefined && repo.stargazers_count > 0 && (
                           <div className="flex items-center gap-1">
                             <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -235,7 +240,7 @@ export default function HomePage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-purple-600 group-hover:text-purple-700 font-semibold">
-                        <span>Generate</span>
+                        <span>Generate Tests</span>
                         <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
